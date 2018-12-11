@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from first_app.forms import NewTweetForm, ProfileEditForm, PasswordEditForm
+from first_app.forms import NewTweetForm, ProfileEditForm, PasswordEditForm, TweetForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from first_app.models import UserProfileInfo, Tweet
@@ -181,17 +181,6 @@ def edit_page(request):
 
 
 @login_required
-def feed_page(request):
-	
-	user = request.user
-	userprofile = UserProfileInfo.objects.get(user=user)
-	follows = userprofile.follows.all()
-
-	tweets_of_user = Tweet.objects.all().order_by('-id').filter(user__in=follows)
-	
-	return render(request, 'feed_page.html', context={'list': tweets_of_user, 'logged_in': True, 'user': user})
-
-@login_required
 def follow_user(request, username):
 	user1 = request.user
 	user = UserProfileInfo.objects.get(user= user1)
@@ -263,8 +252,40 @@ def dislike_tweet(request,tweet_id):
 	tweet_to_dislike.liked_by.remove(user)
 	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-	
 
+
+@login_required
+def feed_page(request):
+	
+	user = request.user
+	userprofile = UserProfileInfo.objects.get(user=user)
+	follows = userprofile.follows.all()
+
+	tweets_of_user = Tweet.objects.all().order_by('-id').filter(user__in=follows)
+	
+	return render(request, 'feed_page.html', context={'list': tweets_of_user, 'logged_in': True, 'user': user, 'form': TweetForm()})
+
+
+@login_required
+def new_feed_page(request):
+	if request.method == 'POST':
+		userprofile = UserProfileInfo.objects.get(user=request.user)
+		title = request.POST.get('title')
+		text = request.POST.get('text')
+		tweet = Tweet(title=title, text=text, user=userprofile, date=datetime.datetime.now())
+		tweet.save()
+
+		respone_data = {
+			'result': 'succes',
+			'id': tweet.id,
+			'title': tweet.title,
+			'text': tweet.text
+		}
+
+		return HttpResponse(json.dumps(respone_data), content_type='application/json/')
+	else:
+		error = {'error': 'None Post method not allowed'}
+		return HttpResponse('hzfhfzh')
 
 
 

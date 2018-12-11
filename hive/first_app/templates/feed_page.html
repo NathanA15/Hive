@@ -7,7 +7,15 @@
 <h1>Your Feed: </h1>
 </div>
 <br>
-			
+
+<form action="" method="POST" id='tweet-form'>
+	{{ form.as_p }}
+	{% csrf_token %}
+	<input type="submit" name="submit">
+</form>
+
+
+<div id='all-tweets'>
   {% for tweet in list %}
   <div class="card border-info mx-auto" style="max-width: 50rem;">
 	  			<div class="card-header"> 
@@ -21,7 +29,7 @@
 				    <p class="card-text">Tweet Date : {{tweet.date}} </p>
 					By <a href="{% url 'first_app:profile_page' username=tweet.user.user.username %}"> {{tweet.user.user.username}} </a>
 	  			</div>
-			</div>
+	</div>
 
 
   <div >
@@ -29,5 +37,6 @@
   	<p>
   </div>
   {% endfor %}
+</div>
 
 {% endblock %}
