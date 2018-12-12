@@ -17,4 +17,5 @@ urlpatterns = [
 	path('all_followers/<username>/', views.all_followers, name='all_followers'),
 	path('like_tweet/<tweet_id>/', views.like_tweet, name='like_tweet'),
 	path('dislike_tweet/<tweet_id>/', views.dislike_tweet, name='dislike_tweet'),
+	path('create_tweet/', views.new_feed_page, name='new_feed_page'),
 ]

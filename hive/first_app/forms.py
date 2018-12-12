@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from first_app.models import Tweet
 
 class NewTweetForm(forms.Form):
 	title = forms.CharField(max_length=140)
@@ -30,3 +31,32 @@ class PasswordEditForm(forms.Form):
 			raise forms.ValidationError('Make sure new passwords matchs.')
 
 		return clean_data
+
+
+class TweetForm(forms.ModelForm):
+	class Meta:
+		model = Tweet
+		fields = ['title', 'text']
+		widgets = {
+			'title': forms.TextInput(attrs={
+				'id': 'tweet-title',
+				'required': True,
+				'placeholder': 'title',
+				}),
+			'text': forms.Textarea(attrs={
+				'id': 'tweet-text',
+				'required': True,
+				'placeholder': 'text',
+				})
+
+		}
+
+
+
+
+
+
+
+
+
+
