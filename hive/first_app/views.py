@@ -7,6 +7,7 @@ from first_app.models import UserProfileInfo, Tweet
 from django.contrib.auth.models import User
 import datetime
 from django.contrib.auth.hashers import check_password, make_password
+import json
 
 
 def get_all_users(username):
@@ -263,10 +264,9 @@ def feed_page(request):
 
 	tweets_of_user = Tweet.objects.all().order_by('-id').filter(user__in=follows)
 	
-	return render(request, 'feed_page.html', context={'list': tweets_of_user, 'logged_in': True, 'user': user, 'form': TweetForm()})
+	return render(request, 'feed_page.html', {'list': tweets_of_user, 'logged_in': True, 'user': user, 'form': TweetForm()})
 
 
-@login_required
 def new_feed_page(request):
 	if request.method == 'POST':
 		userprofile = UserProfileInfo.objects.get(user=request.user)
@@ -279,13 +279,17 @@ def new_feed_page(request):
 			'result': 'succes',
 			'id': tweet.id,
 			'title': tweet.title,
-			'text': tweet.text
+			'text': tweet.text,
+			'date': tweet.date.strftime('%b.%d,%y'),
+			'username': tweet.user.user.username,
+			
 		}
 
 		return HttpResponse(json.dumps(respone_data), content_type='application/json/')
 	else:
 		error = {'error': 'None Post method not allowed'}
-		return HttpResponse('hzfhfzh')
+		print('EEeeEEEEEeEEEEEEEEEE')
+		return HttpResponse(error)
 
 
 

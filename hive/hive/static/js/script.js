@@ -1,15 +1,15 @@
 $(document).ready(function() {
+
 	$('#tweet-form').on('submit', function(e) {
 		e.preventDefault();
 		createTweet();
 	});
-
 });
 
 
 function createTweet(){
 	$.ajax({
-		url: 'create_tweet/',
+		url: '/first_app/create_tweet/',
 		type: 'POST',
 		data: {
 			title: $('#tweet-title').val(),
@@ -28,27 +28,25 @@ function createTweet(){
 
 
 function addTweet(tweet) {
+	var d = new Date();
 	var tweetHTML = `
 	<div class="card border-info mx-auto" style="max-width: 50rem;">
 				<div class="card-header"> 
-				` + tweet.title + ` --- Tweet id : ` + tweet.id + `
+				` +tweet.title+ ` --- Tweet id : ` +tweet.id+ `
 				</div>
 
 				<div class="card-body">
 					<h5 class="card-title">
-						` + tweet.text + `	
+						` +tweet.text+ `	
 					</h5>
-					<p class="card-text">Tweet Date : ` + tweet.date + `</p>
-					By <a href="{% url 'first_app:profile_page' username=` + tweet.user.user.username + ` %}"> ` + tweet.user.user.username + ` </a>
+					<p class="card-text">Tweet Date : ` +tweet.date+ `</p>
+					By <a href="{% url 'first_app:profile_page' ` +tweet.username+ ` %}"> ` +tweet.username+ ` </a> ` +tweet.date + `
 				</div>
 	</div>
 	`;
 
 	$('#all-tweets').prepend(tweetHTML);
-
-
-}
-
+};
 
 
 $(function() {
@@ -90,13 +88,4 @@ $(function() {
         }
     });
 });
-
-
-
-
-
-
-
-
-
 
